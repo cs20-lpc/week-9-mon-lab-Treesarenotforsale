@@ -2,7 +2,7 @@ template <typename T>
 LinkedQueue<T>::LinkedQueue() {
     // TODO
     this->head = nullptr;
-    this->tail = nullptr;
+    this->last = nullptr;
     this->length = 0;
 }
 
@@ -29,9 +29,9 @@ template <typename T>
 T LinkedQueue<T>::back() const {
     // TODO
     if (isEmpty()) {
-        throw std::underflow_error("Queue is empty");
+        throw std::underflow_error("Queue is empty. Cannot access back element.");
     }
-    return this->tail->getItem();
+    return this->last->value;
 }
 
 template <typename T>
@@ -41,63 +41,61 @@ void LinkedQueue<T>::clear() {
         dequeue();
     }
     this->head = nullptr;
-    this->tail = nullptr;
+    this->last = nullptr;
     this->length = 0;
 }
 
 template <typename T>
 void LinkedQueue<T>::copy(const LinkedQueue<T>& copyObj) {
     // TODO
-    if (copyObj.isEmpty()) {
-        this->head = nullptr;
-        this->tail = nullptr;
-        this->length = 0;
-        return;
-    }
-    Node<T>* current = copyObj.head;
+    this->head = nullptr;
+    this->last = nullptr;
+    this->length = 0;
+    Node* current = copyObj.head;
     while (current != nullptr) {
-        enqueue(current->getItem());
-        current = current->getNext();
+        enqueue(current->value);
+        current = current->next;
     }
+    this->length = copyObj.length;
+
 }
 
 template <typename T>
 void LinkedQueue<T>::dequeue() {
     // TODO
     if (isEmpty()) {
-        throw std::underflow_error("Queue is empty");
+        throw std::underflow_error("Queue is empty. Cannot dequeue.");
     }
-    Node<T>* oldHead = this->head;
-    this->head = this->head->getNext();
-    delete oldHead;
+    Node* temp = this->head;
+    this->head = this->head->next;
+    delete temp;
     this->length--;
     if (this->head == nullptr) {
-        this->tail = nullptr;
+        this->last = nullptr;
     }
 }
 
 template <typename T>
 void LinkedQueue<T>::enqueue(const T& elem) {
     // TODO
-    Node<T>* newNode = new Node<T>(elem);
+    Node* newNode = new Node(elem);
     if (isEmpty()) {
         this->head = newNode;
-        this->tail = newNode;
+        this->last = newNode;
     } else {
-        this->tail->setNext(newNode);
-        this->tail = newNode;
+        this->last->next = newNode;
+        this->last = newNode;
     }
     this->length++;
-}
 }
 
 template <typename T>
 T LinkedQueue<T>::front() const {
     // TODO
     if (isEmpty()) {
-        throw std::underflow_error("Queue is empty");
+        throw std::underflow_error("Queue is empty. Cannot access front element.");
     }
-    return this->head->getItem();
+    return this->head->value;
 }
 
 template <typename T>
